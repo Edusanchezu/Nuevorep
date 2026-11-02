@@ -1,11 +1,10 @@
-from flask import Flask, render_template, request
+from flask import Flask
 
 app = Flask(__name__)
 
-historial = []
-
-@app.route("/", methods=["GET", "POST"])
-def calculadora():
+@app.route("/")
+def home():
+    return "Hola desde Flask en Vercel"
 
     resultado = ""
 
