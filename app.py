@@ -1,10 +1,10 @@
-from flask import Flask
+from flask import Flask, request
 
 app = Flask(__name__)
 
-@app.route("/")
-def home():
-    return "Hola desde Vercel"
+@app.route("/", methods=["GET", "POST"])
+def calculadora():
+
     resultado = ""
 
     if request.method == "POST":
@@ -12,117 +12,70 @@ def home():
         expresion = request.form.get("expresion", "")
 
         try:
-            resultado = eval(expresion)
-            historial.append(f"{expresion} = {resultado}")
-
+            resultado = str(eval(expresion))
         except:
             resultado = "Error"
 
-    html = f"""
+    return f"""
     <!DOCTYPE html>
     <html>
     <head>
-        <title>Calculadora con Historial</title>
+        <title>Calculadora Flask</title>
 
         <style>
             body {{
                 font-family: Arial;
-                max-width: 600px;
-                margin: 40px auto;
+                max-width: 500px;
+                margin: 50px auto;
                 padding: 20px;
-                background: #f5f5f5;
-            }}
-
-            h1 {{
-                text-align: center;
             }}
 
             input {{
                 width: 100%;
-                padding: 12px;
-                font-size: 20px;
+                padding: 10px;
+                font-size: 18px;
                 margin-bottom: 10px;
-                box-sizing: border-box;
             }}
 
             button {{
                 width: 100%;
-                padding: 12px;
-                font-size: 18px;
-                background: #0078D7;
+                padding: 10px;
+                background: #0078d4;
                 color: white;
                 border: none;
                 cursor: pointer;
             }}
 
-            button:hover {{
-                background: #005ea6;
-            }}
-
             .resultado {{
                 margin-top: 20px;
-                padding: 10px;
-                background: white;
-                border-radius: 5px;
-            }}
-
-            .historial {{
-                margin-top: 20px;
-                background: white;
                 padding: 15px;
+                background-color: #f3f3f3;
                 border-radius: 5px;
-            }}
-
-            li {{
-                margin-bottom: 5px;
             }}
         </style>
-
     </head>
 
     <body>
 
-        <h1>Calculadora con Historial</h1>
+        <h1>Calculadora</h1>
 
         <form method="POST">
-
             <input
                 type="text"
                 name="expresion"
                 placeholder="Ejemplo: 5+3*2"
-                required
-            >
-
-            <button type="submit">
-                Calcular
-            </button>
-
+                required>
+            <button type="submit">Calcular</button>
         </form>
 
         <div class="resultado">
-
             <h3>Resultado:</h3>
-
             <p>{resultado}</p>
-
-        </div>
-
-        <div class="historial">
-
-            <h3>Historial</h3>
-
-            <ul>
-                {"".join([f"<li>{item}</li>" for item in historial])}
-            </ul>
-
         </div>
 
     </body>
     </html>
     """
 
-    return html
-
-
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
