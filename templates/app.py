@@ -1,9 +1,10 @@
-from flask import Flask, request
+from flask import Flask
 
 app = Flask(__name__)
 
-@app.route("/", methods=["GET", "POST"])
-def calculadora():
+@app.route("/")
+def home():
+    return "Vercel funciona"
 
     resultado = ""
 
