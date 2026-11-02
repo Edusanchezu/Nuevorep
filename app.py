@@ -1,90 +1,131 @@
-import tkinter as tk
-from tkinter import messagebox
+import Flask
+from flask import Flask, request
 
-# Función para agregar números y operadores
-def agregar(valor):
-    pantalla.insert(tk.END, valor)
+app = Flask(__name__)
 
-# Función para limpiar la pantalla
-def limpiar():
-    pantalla.delete(0, tk.END)
+historial = []
 
-# Función para calcular resultado
-def calcular():
-    try:
-        operacion = pantalla.get()
-        resultado = eval(operacion)
+@app.route("/", methods=["GET", "POST"])
+def calculadora():
 
-        historial.insert(tk.END, f"{operacion} = {resultado}")
+    resultado = ""
 
-        pantalla.delete(0, tk.END)
-        pantalla.insert(0, str(resultado))
+    if request.method == "POST":
 
-    except:
-        messagebox.showerror("Error", "Operación no válida")
-        limpiar()
+        expresion = request.form.get("expresion", "")
 
-# Ventana principal
-ventana = tk.Tk()
-ventana.title("Calculadora con Historial")
-ventana.geometry("400x500")
-ventana.resizable(False, False)
+        try:
+            resultado = eval(expresion)
+            historial.append(f"{expresion} = {resultado}")
 
-# Pantalla
-pantalla = tk.Entry(ventana, font=("Arial", 18), justify="right")
-pantalla.pack(fill="x", padx=10, pady=10)
+        except:
+            resultado = "Error"
 
-# Frame de botones
-frame_botones = tk.Frame(ventana)
-frame_botones.pack()
+    html = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Calculadora con Historial</title>
 
-botones = [
-    "7", "8", "9", "/",
-    "4", "5", "6", "*",
-    "1", "2", "3", "-",
-    "0", ".", "=", "+"
-]
+        <style>
+            body {{
+                font-family: Arial;
+                max-width: 600px;
+                margin: 40px auto;
+                padding: 20px;
+                background: #f5f5f5;
+            }}
 
-fila = 0
-columna = 0
+            h1 {{
+                text-align: center;
+            }}
 
-for boton in botones:
-    if boton == "=":
-        comando = calcular
-    else:
-        comando = lambda x=boton: agregar(x)
+            input {{
+                width: 100%;
+                padding: 12px;
+                font-size: 20px;
+                margin-bottom: 10px;
+                box-sizing: border-box;
+            }}
 
-    tk.Button(
-        frame_botones,
-        text=boton,
-        width=8,
-        height=3,
-        command=comando
-    ).grid(row=fila, column=columna)
+            button {{
+                width: 100%;
+                padding: 12px;
+                font-size: 18px;
+                background: #0078D7;
+                color: white;
+                border: none;
+                cursor: pointer;
+            }}
 
-    columna += 1
-    if columna > 3:
-        columna = 0
-        fila += 1
+            button:hover {{
+                background: #005ea6;
+            }}
 
-# Botón limpiar
-tk.Button(
-    ventana,
-    text="Limpiar",
-    width=35,
-    height=2,
-    bg="lightcoral",
-    command=limpiar
-).pack(pady=10)
+            .resultado {{
+                margin-top: 20px;
+                padding: 10px;
+                background: white;
+                border-radius: 5px;
+            }}
 
-# Historial
-tk.Label(
-    ventana,
-    text="Historial de operaciones",
-    font=("Arial", 12, "bold")
-).pack()
+            .historial {{
+                margin-top: 20px;
+                background: white;
+                padding: 15px;
+                border-radius: 5px;
+            }}
 
-historial = tk.Listbox(ventana, height=10)
-historial.pack(fill="both", expand=True, padx=10, pady=10)
+            li {{
+                margin-bottom: 5px;
+            }}
+        </style>
 
-ventana.mainloop()
+    </head>
+
+    <body>
+
+        <h1>Calculadora con Historial</h1>
+
+        <form method="POST">
+
+            <input
+                type="text"
+                name="expresion"
+                placeholder="Ejemplo: 5+3*2"
+                required
+            >
+
+            <button type="submit">
+                Calcular
+            </button>
+
+        </form>
+
+        <div class="resultado">
+
+            <h3>Resultado:</h3>
+
+            <p>{resultado}</p>
+
+        </div>
+
+        <div class="historial">
+
+            <h3>Historial</h3>
+
+            <ul>
+                {"".join([f"<li>{item}</li>" for item in historial])}
+            </ul>
+
+        </div>
+
+    </body>
+    </html>
+    """
+
+    return html
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
