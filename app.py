@@ -4,8 +4,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "Hola desde Flask en Vercel"
-
+    return "Hola desde Vercel"
     resultado = ""
 
     if request.method == "POST":
