@@ -1,10 +1,14 @@
-from flask import Flask, request
+# api/index.py  
+from flask import Flask
 
 app = Flask(__name__)
 
-@app.route("/", methods=["GET", "POST"])
-def calculadora():
+@app.route('/')
+def home():
+    return "¡Hola desde Flask y Vercel!"
 
+# Importante para Vercel:
+# expone una variable llamada 'app'
     resultado = ""
 
     if request.method == "POST":
