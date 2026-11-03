@@ -3,9 +3,11 @@ import requests
 
 app = Flask(__name__)
 
-SUPABASE_URL = "https://unrajkbriivdyobaoara.supabase.co"
+import os
 
-SUPABASE_KEY = "sb_publishable_Qdi3qlS_3xkGrcV16R5Mgg_uW9BRQ_p"
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 HEADERS = {
     "apikey": SUPABASE_KEY,
@@ -120,3 +122,4 @@ def calculadora():
 
 if __name__ == "__main__":
     app.run(debug=True)
+    # redeploy
