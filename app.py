@@ -23,13 +23,18 @@ def calculadora():
 
     if request.method == "POST":
 
-        nombre = request.form.get("nombre", "")
+        nombre = request.form.get("nombre", "").strip()
+
+        if len(nombre) > 50:
+            nombre = nombre[:50]
+        
         expresion = request.form.get("expresion", "")
 
         try:
 
-            resultado = str(eval(expresion))
+            from simpleeval import simple_eval
 
+            resultado = str(simple_eval(expresion))
             print("Nombre:", nombre)
             print("Resultado:", resultado)
 
